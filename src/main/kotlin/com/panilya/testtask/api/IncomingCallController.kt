@@ -2,6 +2,8 @@ package com.panilya.testtask.api
 
 import com.panilya.testtask.service.IncomingCallService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
@@ -29,6 +31,10 @@ class IncomingCallController(
 
     @PostMapping("/incomingCall")
     @Operation(summary = "Handle incoming call", description = "Handle incoming call from the app")
+    @ApiResponses(
+        ApiResponse(responseCode = "201", description = "Customer created"),
+        ApiResponse(responseCode = "400", description = "Invalid request")
+    )
     fun handleIncomingCall(
         @Valid @RequestBody incomingCallRequest: IncomingCallRequest,
         request: HttpServletRequest
@@ -43,6 +49,10 @@ class IncomingCallController(
 
     @GetMapping("/customer")
     @Operation(summary = "Get customers", description = "Get customers by phone number or email")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Customer(s) found"),
+        ApiResponse(responseCode = "404", description = "Customer(s) not found")
+    )
     fun getCustomer(
         @RequestParam("phoneNumber", required = false) phoneNumber: String?,
         @RequestParam("email", required = false) @Email email: String?
