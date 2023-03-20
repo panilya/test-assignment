@@ -42,12 +42,12 @@ class IncomingCallController(
     }
 
     @GetMapping("/customer")
-    @Operation(summary = "Get customer", description = "Get customer by phone number or email")
+    @Operation(summary = "Get customers", description = "Get customers by phone number or email")
     fun getCustomer(
         @RequestParam("phoneNumber", required = false) phoneNumber: String?,
         @RequestParam("email", required = false) @Email email: String?
-    ): ResponseEntity<GetCustomerResponse> {
-        return ResponseEntity.ok(incomingCallService.getCustomer(phoneNumber, email))
+    ): ResponseEntity<List<GetCustomerResponse>> {
+        return ResponseEntity.ok(incomingCallService.getCustomers(phoneNumber, email))
     }
 
 }
@@ -69,11 +69,11 @@ data class IncomingCallRequest(
 )
 
 data class GetCustomerResponse(
-    val objectId: String,
-    val firstName: String,
-    val lastName: String,
-    val phoneNumber: String,
-    val email: String,
-    val appName: String,
-    val createdAt: Instant
+    val objectId: String?,
+    val firstName: String?,
+    val lastName: String?,
+    val phoneNumber: String?,
+    val email: String?,
+    val appName: String?,
+    val createdAt: Instant?
 )

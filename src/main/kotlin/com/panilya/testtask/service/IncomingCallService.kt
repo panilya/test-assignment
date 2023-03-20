@@ -27,11 +27,28 @@ class IncomingCallService(
         customerRepository.save(customer)
     }
 
-    fun getCustomer(phoneNumber: String?, email: String?): GetCustomerResponse {
-        return if (phoneNumber != null) {
-            customerRepository.findCustomerByPhoneNumber(phoneNumber)?.toResponse() ?: throw CustomerNotFoundException()
+    fun getCustomers(phoneNumber: String?, email: String?): List<GetCustomerResponse> {
+        if (phoneNumber != null && email != null) {
+            val customers = customerRepository.findCustomersByPhoneNumberAndEmail(phoneNumber, email)
+            if (customers != null) {
+                return customers.map { it.toResponse() }
+            } else {
+                throw CustomerNotFoundException()
+            }
+        } else if (phoneNumber != null) {
+            val customers = customerRepository.findCustomersByPhoneNumber(phoneNumber)
+            if (customers != null) {
+                return customers.map { it.toResponse() }
+            } else {
+                throw CustomerNotFoundException()
+            }
         } else if (email != null) {
-            customerRepository.findCustomerByEmail(email)?.toResponse() ?: throw CustomerNotFoundException()
+            val customers = customerRepository.findCustomersByEmail(email)
+            if (customers != null) {
+                return customers.map { it.toResponse() }
+            } else {
+                throw CustomerNotFoundException()
+            }
         } else {
             throw NoCustomerSearchFilterSpecifiedException()
         }
@@ -42,11 +59,11 @@ class IncomingCallService(
 fun Customer.toResponse(): GetCustomerResponse {
     return GetCustomerResponse(
         objectId = this.objectId,
-        firstName = this.firstName!!,
-        lastName = this.lastName!!,
-        phoneNumber = this.phoneNumber!!,
-        email = this.email!!,
-        appName = this.appName!!,
-        createdAt = this.createdAt!!
+        firstName = this.firstName,
+        lastName = this.lastName,
+        phoneNumber = this.phoneNumber,
+        email = this.email,
+        appName = this.appName,
+        createdAt = this.createdAt
     )
 }

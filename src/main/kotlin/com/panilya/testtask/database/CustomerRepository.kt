@@ -11,9 +11,12 @@ interface CustomerRepository : JpaRepository<Customer, Long> {
 
     fun findByObjectId(objectId: String): Customer?
 
-    fun findCustomerByPhoneNumber(phoneNumber: String): Customer?
+    fun findCustomersByPhoneNumber(phoneNumber: String): List<Customer>?
 
-    fun findCustomerByEmail(email: String): Customer?
+    fun findCustomersByEmail(email: String): List<Customer>?
+
+    @Query("SELECT c FROM Customer c WHERE c.phoneNumber = :phoneNumber AND c.email = :email")
+    fun findCustomersByPhoneNumberAndEmail(@Param("phoneNumber") phoneNumber: String, @Param("email") email: String): List<Customer>?
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Customer c " +
             "WHERE c.firstName = :#{#incomingCallRequest.firstName} " +

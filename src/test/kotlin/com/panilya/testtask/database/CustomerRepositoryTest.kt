@@ -56,28 +56,45 @@ class CustomerRepositoryTest : AbstractIT() {
     fun `check finding customer by phone number`() {
         val customer = customerRepository.save(CustomerObjectMother.createCustomer())
 
-        val foundCustomer = customerRepository.findCustomerByPhoneNumber(customer.phoneNumber!!)
-        assertThat(foundCustomer).isNotNull
-        assertThat(foundCustomer!!.firstName).isEqualTo(customer.firstName)
-        assertThat(foundCustomer.lastName).isEqualTo(customer.lastName)
-        assertThat(foundCustomer.email).isEqualTo(customer.email)
-        assertThat(foundCustomer.phoneNumber).isEqualTo(customer.phoneNumber)
-        assertThat(foundCustomer.appName).isEqualTo(customer.appName)
-        assertThat(foundCustomer.createdAt).isNotNull
+        assertThat(customerRepository.findAll()).hasSize(1)
+
+        val foundCustomer = customerRepository.findCustomersByPhoneNumber(customer.phoneNumber!!)
+        assertThat(foundCustomer).hasSize(1)
+        assertThat(foundCustomer!!.first().firstName).isEqualTo(customer.firstName)
+        assertThat(foundCustomer.first().lastName).isEqualTo(customer.lastName)
+        assertThat(foundCustomer.first().email).isEqualTo(customer.email)
+        assertThat(foundCustomer.first().phoneNumber).isEqualTo(customer.phoneNumber)
+        assertThat(foundCustomer.first().appName).isEqualTo(customer.appName)
+        assertThat(foundCustomer.first().createdAt).isNotNull
     }
 
     @Test
     fun `check finding customer by email`() {
         val customer = customerRepository.save(CustomerObjectMother.createCustomer())
 
-        val foundCustomer = customerRepository.findCustomerByEmail(customer.email!!)
+        val foundCustomer = customerRepository.findCustomersByEmail(customer.email!!)
         assertThat(foundCustomer).isNotNull
-        assertThat(foundCustomer!!.firstName).isEqualTo(customer.firstName)
-        assertThat(foundCustomer.lastName).isEqualTo(customer.lastName)
-        assertThat(foundCustomer.email).isEqualTo(customer.email)
-        assertThat(foundCustomer.phoneNumber).isEqualTo(customer.phoneNumber)
-        assertThat(foundCustomer.appName).isEqualTo(customer.appName)
-        assertThat(foundCustomer.createdAt).isNotNull
+        assertThat(foundCustomer!!.first().firstName).isEqualTo(customer.firstName)
+        assertThat(foundCustomer.first().lastName).isEqualTo(customer.lastName)
+        assertThat(foundCustomer.first().email).isEqualTo(customer.email)
+        assertThat(foundCustomer.first().phoneNumber).isEqualTo(customer.phoneNumber)
+        assertThat(foundCustomer.first().appName).isEqualTo(customer.appName)
+        assertThat(foundCustomer.first().createdAt).isNotNull
+    }
+
+    @Test
+    fun `check finding customer by email and phone number`() {
+        val customer = customerRepository.save(CustomerObjectMother.createCustomer())
+
+        val foundCustomer = customerRepository.findCustomersByPhoneNumberAndEmail(customer.email!!, customer.phoneNumber!!)
+        assertThat(foundCustomer).isNotNull
+        assertThat(foundCustomer).hasSize(1)
+        assertThat(foundCustomer!!.first().firstName).isEqualTo(customer.firstName)
+        assertThat(foundCustomer.first().lastName).isEqualTo(customer.lastName)
+        assertThat(foundCustomer.first().email).isEqualTo(customer.email)
+        assertThat(foundCustomer.first().phoneNumber).isEqualTo(customer.phoneNumber)
+        assertThat(foundCustomer.first().appName).isEqualTo(customer.appName)
+        assertThat(foundCustomer.first().createdAt).isNotNull
     }
 
 }
