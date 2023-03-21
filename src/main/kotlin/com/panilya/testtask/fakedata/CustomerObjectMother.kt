@@ -7,12 +7,12 @@ object CustomerObjectMother {
 
     private val faker = Faker()
 
-    fun createCustomer(): Customer {
+    fun createCustomer(email: String? = faker.internet().emailAddress(), phoneNumber: String? = faker.phoneNumber().phoneNumberInternational()): Customer {
         val customer = Customer()
         customer.firstName = faker.name().firstName()
         customer.lastName = faker.name().lastName()
-        customer.email = faker.internet().emailAddress()
-        customer.phoneNumber = faker.phoneNumber().phoneNumberInternational()
+        customer.email = email
+        customer.phoneNumber = phoneNumber
         customer.appName = faker.app().name()
         return customer
     }

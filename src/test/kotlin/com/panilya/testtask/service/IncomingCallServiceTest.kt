@@ -63,7 +63,7 @@ class IncomingCallServiceTest {
     }
 
     @Test
-    fun `test getting customers`() {
+    fun `test getting customers by both phone number and email`() {
         val customer = customerRepository.save(CustomerObjectMother.createCustomer())
 
         val customers = incomingCallService.getCustomers(customer.phoneNumber!!, customer.email!!)
@@ -74,4 +74,54 @@ class IncomingCallServiceTest {
         assertThat(customers.first().email).isEqualTo(customer.email)
         assertThat(customers.first().appName).isNotNull
     }
+
+    @Test
+    fun `test getting customer by only phone number`() {
+        val customer = customerRepository.save(CustomerObjectMother.createCustomer())
+
+        val customers = incomingCallService.getCustomers(customer.phoneNumber!!, null)
+        assertThat(customers).hasSize(1)
+        assertThat(customers.first().firstName).isEqualTo(customer.firstName)
+        assertThat(customers.first().lastName).isEqualTo(customer.lastName)
+        assertThat(customers.first().phoneNumber).isEqualTo(customer.phoneNumber)
+        assertThat(customers.first().email).isEqualTo(customer.email)
+        assertThat(customers.first().appName).isNotNull
+    }
+
+    @Test
+    fun `test getting customer by only email`() {
+        val customer = customerRepository.save(CustomerObjectMother.createCustomer())
+
+        val customers = incomingCallService.getCustomers(null, customer.email!!)
+        assertThat(customers).hasSize(1)
+        assertThat(customers.first().firstName).isEqualTo(customer.firstName)
+        assertThat(customers.first().lastName).isEqualTo(customer.lastName)
+        assertThat(customers.first().phoneNumber).isEqualTo(customer.phoneNumber)
+        assertThat(customers.first().email).isEqualTo(customer.email)
+        assertThat(customers.first().appName).isNotNull
+    }
+
+    @Test
+    fun `test getting more than 1 customer`() {
+        val firstCustomer = customerRepository.save(CustomerObjectMother.createCustomer(email = "email@gmail.com"))
+        val secondCustomer = customerRepository.save(CustomerObjectMother.createCustomer(email = "email@gmail.com"))
+
+        val customers = incomingCallService.getCustomers(null, firstCustomer.email!!)
+
+        assertThat(customers).hasSize(2)
+
+        assertThat(customers.first().firstName).isEqualTo(firstCustomer.firstName)
+        assertThat(customers.first().lastName).isEqualTo(firstCustomer.lastName)
+        assertThat(customers.first().phoneNumber).isEqualTo(firstCustomer.phoneNumber)
+        assertThat(customers.first().email).isEqualTo(firstCustomer.email)
+        assertThat(customers.first().appName).isNotNull
+
+        assertThat(customers[1].firstName).isEqualTo(secondCustomer.firstName)
+        assertThat(customers[1].lastName).isEqualTo(secondCustomer.lastName)
+        assertThat(customers[1].phoneNumber).isEqualTo(secondCustomer.phoneNumber)
+        assertThat(customers[1].email).isEqualTo(secondCustomer.email)
+        assertThat(customers[1].appName).isNotNull
+
+    }
+
 }

@@ -29,7 +29,7 @@ class IncomingCallService(
 
     fun getCustomers(phoneNumber: String?, email: String?): List<GetCustomerResponse> {
         return if (phoneNumber != null && email != null) {
-            customerRepository.findCustomersByPhoneNumberAndEmail(phoneNumber, email)?.map { it.toResponse()} ?: throw CustomerNotFoundException()
+            customerRepository.findCustomersByPhoneNumberAndEmail(phoneNumber, email)?.map { it.toResponse() } ?: throw CustomerNotFoundException()
         } else if (phoneNumber != null) {
             customerRepository.findCustomersByPhoneNumber(phoneNumber)?.map { it.toResponse() } ?: throw CustomerNotFoundException()
         } else if (email != null) {
