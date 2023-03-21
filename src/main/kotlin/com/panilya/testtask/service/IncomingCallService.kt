@@ -28,27 +28,12 @@ class IncomingCallService(
     }
 
     fun getCustomers(phoneNumber: String?, email: String?): List<GetCustomerResponse> {
-        if (phoneNumber != null && email != null) {
-            val customers = customerRepository.findCustomersByPhoneNumberAndEmail(phoneNumber, email)
-            if (customers != null) {
-                return customers.map { it.toResponse() }
-            } else {
-                throw CustomerNotFoundException()
-            }
+        return if (phoneNumber != null && email != null) {
+            customerRepository.findCustomersByPhoneNumberAndEmail(phoneNumber, email)?.map { it.toResponse()} ?: throw CustomerNotFoundException()
         } else if (phoneNumber != null) {
-            val customers = customerRepository.findCustomersByPhoneNumber(phoneNumber)
-            if (customers != null) {
-                return customers.map { it.toResponse() }
-            } else {
-                throw CustomerNotFoundException()
-            }
+            customerRepository.findCustomersByPhoneNumber(phoneNumber)?.map { it.toResponse() } ?: throw CustomerNotFoundException()
         } else if (email != null) {
-            val customers = customerRepository.findCustomersByEmail(email)
-            if (customers != null) {
-                return customers.map { it.toResponse() }
-            } else {
-                throw CustomerNotFoundException()
-            }
+            customerRepository.findCustomersByEmail(email)?.map { it.toResponse() } ?: throw CustomerNotFoundException()
         } else {
             throw NoCustomerSearchFilterSpecifiedException()
         }
